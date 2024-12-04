@@ -32,6 +32,24 @@ export default class RubikCube {
             scene.add(cubie);
         }
     }
+    
+    applyMove(face, clockwise = true) {
+        const direction = clockwise ? 1 : -1;
+        for (let cubie of this.#getCubiesFromFace(face)) {
+            cubie.rotation.x += Math.PI / 2 * direction;
+        }
+
+    }
+    
+    #getCubiesFromFace(face) {
+        let result = [];
+        switch (face) {
+            case "L":
+                result = this.cubies.filter(cubie => cubie.position.x === -1);
+                break;
+        }
+        return result;
+    }
 }
 
 const colors = {
