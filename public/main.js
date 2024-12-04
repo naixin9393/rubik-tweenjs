@@ -71,4 +71,5 @@ function setGUI() {
         rubikCube = new RubikCube();
         rubikCube.addToScene(scene);
     }}, "Reset");
+    
 }
