@@ -3,6 +3,7 @@ import TWEEN from "https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@18.5.0/dist/tw
 
 export default class RubikCube {
     cubies = [];
+    animating = false;
 
     constructor() {
         for (let x = -1; x <= 1; x++) {
@@ -40,8 +41,16 @@ export default class RubikCube {
             scene.add(cubie);
         }
     }
+    
+    removeFromScene(scene) {
+        for (let cubie of this.cubies) {
+            scene.remove(cubie);
+        }
+    }
 
     applyMove({ face, clockwise = true }) {
+        if (this.animating) return;
+        this.animating = true;
         const direction = clockwise ? 1 : -1;
         const group = new THREE.Group();
 
@@ -88,6 +97,7 @@ export default class RubikCube {
                 this.scene.remove(group);
 
                 this.#updateLogicalPositions(face, clockwise);
+                this.animating = false;
             })
             .start();
     }

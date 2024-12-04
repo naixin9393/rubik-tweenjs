@@ -9,7 +9,7 @@ let scene, renderer;
 let camera;
 let objetos = [];
 
-const rubikCube = new RubikCube();
+let rubikCube = new RubikCube();
 
 init();
 loop();
@@ -65,4 +65,10 @@ function setGUI() {
     folder.add({ B: () => rubikCube.applyMove({ face:"B", clockwise:true })}, "B");
     folder.add({ BPrime: () => rubikCube.applyMove({ face:"B", clockwise:false })}, "BPrime").name("B'");
     folder.open();
+    const folder2 = gui.addFolder("Reset");
+    folder2.add({ Reset: () => { 
+        rubikCube.removeFromScene(scene);
+        rubikCube = new RubikCube();
+        rubikCube.addToScene(scene);
+    }}, "Reset");
 }
