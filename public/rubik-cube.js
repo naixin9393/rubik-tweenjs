@@ -8,7 +8,7 @@ export default class RubikCube {
         for (let x = -1; x <= 1; x++) {
             for (let y = -1; y <= 1; y++) {
                 for (let z = -1; z <= 1; z++) {
-                    const geometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+                    const geometry = new THREE.BoxGeometry(0.99, 0.99, 0.99);
 
                     const materials = [
                         new THREE.MeshBasicMaterial({ color: colors.right }), // Right
@@ -20,6 +20,11 @@ export default class RubikCube {
                     ];
 
                     const cubie = new THREE.Mesh(geometry, materials);
+                    
+                    const edges = new THREE.EdgesGeometry(geometry);
+                    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 5 });
+                    const edgeLines = new THREE.LineSegments(edges, edgeMaterial);
+                    cubie.add(edgeLines); 
 
                     cubie.position.set(x, y, z);
                     cubie.logicalPosition = { x, y, z };
@@ -168,7 +173,7 @@ const colors = {
     front: 0xff4444, // Red
     back: 0xff8000, // Orange
     left: 0x0000ff, // Blue
-    right: 0x00ff00, // Green
-    top: 0xffff33, // Yellow
-    bottom: 0xffffff, // White
+    right: 0x00aa00, // Green
+    top: 0xdddd33, // Yellow
+    bottom: 0xdddddd, // White
 };
