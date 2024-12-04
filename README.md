@@ -6,5 +6,11 @@ Este proyecto es un cubo de rubik 3x3x3 que se puede manipular con botones de la
 
 ## Movimientos posibles
 
+### Movimientos básicos
+
 ![basic-clockwise](public/assets/clockwise.png)
 ![basic-counterclockwise](public/assets/counterclockwise.png)
+
+### Movimientos avanzados
+
+![advanced-clockwise](public/assets/advanced.png)

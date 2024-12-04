@@ -64,6 +64,12 @@ function setGUI() {
     folder.add({ FPrime: () => rubikCube.applyMove({ face:"F", clockwise:false })}, "FPrime").name("F'");
     folder.add({ B: () => rubikCube.applyMove({ face:"B", clockwise:true })}, "B");
     folder.add({ BPrime: () => rubikCube.applyMove({ face:"B", clockwise:false })}, "BPrime").name("B'");
+    folder.add({ M: () => rubikCube.applyMove({ face:"M", clockwise:true })}, "M");
+    folder.add({ MPrime: () => rubikCube.applyMove({ face:"M", clockwise:false })}, "MPrime").name("M'");
+    folder.add({ E: () => rubikCube.applyMove({ face:"E", clockwise:true })}, "E");
+    folder.add({ EPrime: () => rubikCube.applyMove({ face:"E", clockwise:false })}, "EPrime").name("E'");
+    folder.add({ S: () => rubikCube.applyMove({ face:"S", clockwise:true })}, "S");
+    folder.add({ SPrime: () => rubikCube.applyMove({ face:"S", clockwise:false })}, "SPrime").name("S'");
     folder.open();
     const folder2 = gui.addFolder("Reset");
     folder2.add({ Reset: () => { 

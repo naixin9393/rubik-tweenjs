@@ -62,6 +62,7 @@ export default class RubikCube {
 
         const axis = { x: 0, y: 0, z: 0 };
         switch (face) {
+            case "M":
             case "L":
                 axis.x = (Math.PI / 2) * direction;
                 break;
@@ -71,9 +72,11 @@ export default class RubikCube {
             case "U":
                 axis.y = -(Math.PI / 2) * direction;
                 break;
+            case "E":
             case "D":
                 axis.y = (Math.PI / 2) * direction;
                 break;
+            case "S":
             case "F":
                 axis.z = -(Math.PI / 2) * direction;
                 break;
@@ -117,6 +120,12 @@ export default class RubikCube {
                     return logicalPosition.z === 1;
                 case "B":
                     return logicalPosition.z === -1;
+                case "M":
+                    return logicalPosition.x === 0;
+                case "E":
+                    return logicalPosition.y === 0;
+                case "S":
+                    return logicalPosition.z === 0;
                 default:
                     return false;
             }
@@ -126,12 +135,15 @@ export default class RubikCube {
     #getRotationAxis(face) {
         switch (face) {
             case "L":
+            case "M":
             case "R":
                 return "x";
             case "U":
             case "D":
+            case "E":
                 return "y";
             case "F":
+            case "S":
             case "B":
                 return "z";
             default:
@@ -154,12 +166,14 @@ export default class RubikCube {
             const pos = cubie.logicalPosition;
 
             switch (face) {
+                case "S":
                 case "F":
                     rotate90(pos, "x", "y", rotatingAngle > 0 ? 1 : -1);
                     break;
                 case "B":
                     rotate90(pos, "x", "y", rotatingAngle > 0 ? -1 : 1);
                     break;
+                case "M":
                 case "L":
                     rotate90(pos, "y", "z", rotatingAngle > 0 ? -1 : 1);
                     break;
@@ -169,6 +183,7 @@ export default class RubikCube {
                 case "U":
                     rotate90(pos, "x", "z", rotatingAngle > 0 ? -1 : 1);
                     break;
+                case "E":
                 case "D":
                     rotate90(pos, "x", "z", rotatingAngle > 0 ? 1 : -1);
                     break;
