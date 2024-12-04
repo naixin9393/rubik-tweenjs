@@ -43,6 +43,12 @@ export default class RubikCube {
                 case "R":
                     cubie.rotation.x -= Math.PI / 2 * direction;
                     break;
+                case "U":
+                    cubie.rotation.y -= Math.PI / 2 * direction;
+                    break;
+                case "D":
+                    cubie.rotation.y += Math.PI / 2 * direction;
+                    break;
             }
         }
 
@@ -56,6 +62,12 @@ export default class RubikCube {
                 break;
             case "R":
                 result = this.cubies.filter(cubie => cubie.position.x === 1);
+                break;
+            case "U":
+                result = this.cubies.filter(cubie => cubie.position.y === 1);
+                break;
+            case "D":
+                result = this.cubies.filter(cubie => cubie.position.y === -1);
                 break;
         }
         return result;
