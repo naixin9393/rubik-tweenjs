@@ -32,42 +32,53 @@ export default class RubikCube {
             scene.add(cubie);
         }
     }
-    
+
     applyMove({ face, clockwise = true }) {
         const direction = clockwise ? 1 : -1;
         for (let cubie of this.#getCubiesFromFace(face)) {
             switch (face) {
                 case "L":
-                    cubie.rotation.x += Math.PI / 2 * direction;
+                    cubie.rotation.x += (Math.PI / 2) * direction;
                     break;
                 case "R":
-                    cubie.rotation.x -= Math.PI / 2 * direction;
+                    cubie.rotation.x -= (Math.PI / 2) * direction;
                     break;
                 case "U":
-                    cubie.rotation.y -= Math.PI / 2 * direction;
+                    cubie.rotation.y -= (Math.PI / 2) * direction;
                     break;
                 case "D":
-                    cubie.rotation.y += Math.PI / 2 * direction;
+                    cubie.rotation.y += (Math.PI / 2) * direction;
+                    break;
+                case "F":
+                    cubie.rotation.z -= (Math.PI / 2) * direction;
+                    break;
+                case "B":
+                    cubie.rotation.z += (Math.PI / 2) * direction;
                     break;
             }
         }
-
     }
-    
+
     #getCubiesFromFace(face) {
         let result = [];
         switch (face) {
             case "L":
-                result = this.cubies.filter(cubie => cubie.position.x === -1);
+                result = this.cubies.filter((cubie) => cubie.position.x === -1);
                 break;
             case "R":
-                result = this.cubies.filter(cubie => cubie.position.x === 1);
+                result = this.cubies.filter((cubie) => cubie.position.x === 1);
                 break;
             case "U":
-                result = this.cubies.filter(cubie => cubie.position.y === 1);
+                result = this.cubies.filter((cubie) => cubie.position.y === 1);
                 break;
             case "D":
-                result = this.cubies.filter(cubie => cubie.position.y === -1);
+                result = this.cubies.filter((cubie) => cubie.position.y === -1);
+                break;
+            case "F":
+                result = this.cubies.filter((cubie) => cubie.position.z === 1);
+                break;
+            case "B":
+                result = this.cubies.filter((cubie) => cubie.position.z === -1);
                 break;
         }
         return result;
