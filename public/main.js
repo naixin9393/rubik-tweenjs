@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
 import TWEEN from "https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@18.5.0/dist/tween.esm.js";
 import RubikCube from "./rubik-cube.js";
@@ -8,6 +9,8 @@ let scene, renderer;
 let camera;
 let objetos = [];
 
+const rubikCube = new RubikCube();
+
 init();
 loop();
 
@@ -15,8 +18,8 @@ function init() {
     setScene();
     setControls(camera, renderer.domElement);
 
-    const rubikCube = new RubikCube();
     rubikCube.addToScene(scene);
+    setGUI();
 }
 
 function loop() {
@@ -44,4 +47,22 @@ function setControls(camera, dom) {
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
+}
+
+function setGUI() {
+    const gui = new GUI();
+    const folder = gui.addFolder("Movements");
+    folder.add({ L: () => rubikCube.applyMove({ face:"L", clockwise:true })}, "L");
+    folder.add({ LPrime: () => rubikCube.applyMove({ face:"L", clockwise:false })}, "LPrime").name("L'");
+    folder.add({ R: () => rubikCube.applyMove({ face:"R", clockwise:true })}, "R");
+    folder.add({ RPrime: () => rubikCube.applyMove({ face:"R", clockwise:false })}, "RPrime").name("R'");
+    folder.add({ U: () => rubikCube.applyMove({ face:"U", clockwise:true })}, "U");
+    folder.add({ UPrime: () => rubikCube.applyMove({ face:"U", clockwise:false })}, "UPrime").name("U'");
+    folder.add({ D: () => rubikCube.applyMove({ face:"D", clockwise:true })}, "D");
+    folder.add({ DPrime: () => rubikCube.applyMove({ face:"D", clockwise:false })}, "DPrime").name("D'");
+    folder.add({ F: () => rubikCube.applyMove({ face:"F", clockwise:true })}, "F");
+    folder.add({ FPrime: () => rubikCube.applyMove({ face:"F", clockwise:false })}, "FPrime").name("F'");
+    folder.add({ B: () => rubikCube.applyMove({ face:"B", clockwise:true })}, "B");
+    folder.add({ BPrime: () => rubikCube.applyMove({ face:"B", clockwise:false })}, "BPrime").name("B'");
+    folder.open();
 }

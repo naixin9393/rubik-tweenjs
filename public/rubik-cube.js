@@ -33,10 +33,17 @@ export default class RubikCube {
         }
     }
     
-    applyMove(face, clockwise = true) {
+    applyMove({ face, clockwise = true }) {
         const direction = clockwise ? 1 : -1;
         for (let cubie of this.#getCubiesFromFace(face)) {
-            cubie.rotation.x += Math.PI / 2 * direction;
+            switch (face) {
+                case "L":
+                    cubie.rotation.x += Math.PI / 2 * direction;
+                    break;
+                case "R":
+                    cubie.rotation.x -= Math.PI / 2 * direction;
+                    break;
+            }
         }
 
     }
@@ -46,6 +53,9 @@ export default class RubikCube {
         switch (face) {
             case "L":
                 result = this.cubies.filter(cubie => cubie.position.x === -1);
+                break;
+            case "R":
+                result = this.cubies.filter(cubie => cubie.position.x === 1);
                 break;
         }
         return result;
