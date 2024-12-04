@@ -24,7 +24,7 @@ function init() {
 
 function loop() {
     requestAnimationFrame(loop);
-    // TWEEN.update();
+    TWEEN.update();
     renderer.render(scene, camera);
 }
 

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import TWEEN from "https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@18.5.0/dist/tween.esm.js";
 
 export default class RubikCube {
     cubies = [];
@@ -21,6 +22,7 @@ export default class RubikCube {
                     const cubie = new THREE.Mesh(geometry, materials);
 
                     cubie.position.set(x, y, z);
+                    cubie.logicalPosition = { x, y, z };
                     this.cubies.push(cubie);
                 }
             }
@@ -28,6 +30,7 @@ export default class RubikCube {
     }
 
     addToScene(scene) {
+        this.scene = scene;
         for (let cubie of this.cubies) {
             scene.add(cubie);
         }
@@ -35,53 +38,129 @@ export default class RubikCube {
 
     applyMove({ face, clockwise = true }) {
         const direction = clockwise ? 1 : -1;
+        const group = new THREE.Group();
+
         for (let cubie of this.#getCubiesFromFace(face)) {
-            switch (face) {
-                case "L":
-                    cubie.rotation.x += (Math.PI / 2) * direction;
-                    break;
-                case "R":
-                    cubie.rotation.x -= (Math.PI / 2) * direction;
-                    break;
-                case "U":
-                    cubie.rotation.y -= (Math.PI / 2) * direction;
-                    break;
-                case "D":
-                    cubie.rotation.y += (Math.PI / 2) * direction;
-                    break;
-                case "F":
-                    cubie.rotation.z -= (Math.PI / 2) * direction;
-                    break;
-                case "B":
-                    cubie.rotation.z += (Math.PI / 2) * direction;
-                    break;
-            }
+            group.add(cubie);
         }
+
+        this.scene.add(group);
+
+        const axis = { x: 0, y: 0, z: 0 };
+        switch (face) {
+            case "L":
+                axis.x = (Math.PI / 2) * direction;
+                break;
+            case "R":
+                axis.x = -(Math.PI / 2) * direction;
+                break;
+            case "U":
+                axis.y = -(Math.PI / 2) * direction;
+                break;
+            case "D":
+                axis.y = (Math.PI / 2) * direction;
+                break;
+            case "F":
+                axis.z = -(Math.PI / 2) * direction;
+                break;
+            case "B":
+                axis.z = (Math.PI / 2) * direction;
+                break;
+        }
+
+        new TWEEN.Tween(group.rotation)
+            .to(axis, 500)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onComplete(() => {
+                group.updateMatrixWorld(true);
+
+                while (group.children.length > 0) {
+                    const cubie = group.children[0];
+                    cubie.applyMatrix4(group.matrixWorld);
+                    this.scene.add(cubie);
+                }
+
+                this.scene.remove(group);
+
+                this.#updateLogicalPositions(face, clockwise);
+            })
+            .start();
     }
 
     #getCubiesFromFace(face) {
-        let result = [];
+        return this.cubies.filter(({ logicalPosition }) => {
+            switch (face) {
+                case "L":
+                    return logicalPosition.x === -1;
+                case "R":
+                    return logicalPosition.x === 1;
+                case "U":
+                    return logicalPosition.y === 1;
+                case "D":
+                    return logicalPosition.y === -1;
+                case "F":
+                    return logicalPosition.z === 1;
+                case "B":
+                    return logicalPosition.z === -1;
+                default:
+                    return false;
+            }
+        });
+    }
+
+    #getRotationAxis(face) {
         switch (face) {
             case "L":
-                result = this.cubies.filter((cubie) => cubie.position.x === -1);
-                break;
             case "R":
-                result = this.cubies.filter((cubie) => cubie.position.x === 1);
-                break;
+                return "x";
             case "U":
-                result = this.cubies.filter((cubie) => cubie.position.y === 1);
-                break;
             case "D":
-                result = this.cubies.filter((cubie) => cubie.position.y === -1);
-                break;
+                return "y";
             case "F":
-                result = this.cubies.filter((cubie) => cubie.position.z === 1);
-                break;
             case "B":
-                result = this.cubies.filter((cubie) => cubie.position.z === -1);
-                break;
+                return "z";
+            default:
+                throw new Error("Invalid face");
         }
-        return result;
+    }
+
+    #updateLogicalPositions(face, clockwise) {
+        const axis = this.#getRotationAxis(face);
+        const affectedCubies = this.#getCubiesFromFace(face);
+        const rotatingAngle = clockwise ? -Math.PI / 2 : Math.PI / 2;
+
+        const rotate90 = (pos, axis1, axis2, direction) => {
+            const temp = pos[axis1];
+            pos[axis1] = direction > 0 ? -pos[axis2] : pos[axis2];
+            pos[axis2] = direction > 0 ? temp : -temp;
+        };
+
+        for (let cubie of affectedCubies) {
+            const pos = cubie.logicalPosition;
+
+            switch (face) {
+                case "F":
+                    rotate90(pos, "x", "y", rotatingAngle > 0 ? 1 : -1);
+                    break;
+                case "B":
+                    rotate90(pos, "x", "y", rotatingAngle > 0 ? -1 : 1);
+                    break;
+                case "L":
+                    rotate90(pos, "y", "z", rotatingAngle > 0 ? -1 : 1);
+                    break;
+                case "R":
+                    rotate90(pos, "y", "z", rotatingAngle > 0 ? 1 : -1);
+                    break;
+                case "U":
+                    rotate90(pos, "x", "z", rotatingAngle > 0 ? -1 : 1);
+                    break;
+                case "D":
+                    rotate90(pos, "x", "z", rotatingAngle > 0 ? 1 : -1);
+                    break;
+            }
+
+            cubie.logicalPosition = pos;
+        }
     }
 }
 
